@@ -346,9 +346,9 @@ public class PopupView: UIView {
         self.addSubview(self.containerView)
 #if !TARGET_OS_TV
         // register for notifications
-        NotificationCenter.default.addObserver(self, selector: #selector(didChangeStatusBarOrientation(_:)), name: Notification.Name.UIApplicationDidChangeStatusBarFrame, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(_:)), name: Notification.Name.UIKeyboardDidShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide(_:)), name: Notification.Name.UIKeyboardDidHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeStatusBarOrientation(_:)), name: UIApplication.didChangeStatusBarFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
 #endif
     }
     
@@ -361,7 +361,7 @@ public class PopupView: UIView {
     }
     
     @objc func keyboardDidShow(_ notification: Notification) {
-        if let keyboardRect = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? CGRect {
+        if let keyboardRect = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
             self.keyboardRect = self.convert(keyboardRect, from: nil)
         }
     }
@@ -400,11 +400,11 @@ public class PopupView: UIView {
             if self.superview == nil {
                 if let v = params["view"] as? UIView {
                     destView = v
-                } else if let v = UIApplication.shared.windows.reversed().first(where: { $0.windowLevel == UIWindow.Level.leastNormalMagnitude }){
+                } else if let v = UIApplication.shared.windows.reversed().first(where: { $0.windowLevel == .normal }){
                     destView = v
                 }
                 destView?.addSubview(self)
-                destView?.bringSubview(toFront: self)
+                destView?.bringSubviewToFront(self)
             }
             self.updateForInterfaceOrientation()
             self.isHidden = false
@@ -666,16 +666,16 @@ public class PopupView: UIView {
     private func willStartShowing() {
         #if !TARGET_OS_TV
         if self.shouldHandleKeyboard {
-            NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowNotification(_:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideNotification(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowNotification(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideNotification(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         }
         #endif
     }
     
     func didFinishDismissing() {
         #if !TARGET_OS_TV
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
         #endif
     }
     // MARK: - Keyboard notification handlers
@@ -691,9 +691,9 @@ public class PopupView: UIView {
 
     func moveContainerViewForKeyboard(_ notification: Notification, up: Bool) {
         let userInfo = notification.userInfo
-        let animationDuration = userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval ?? 0
-        let animationCurve = userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? UIView.AnimationCurve ?? .linear
-        let keyboardEndFrame = userInfo?[UIKeyboardFrameEndUserInfoKey] as? CGRect ?? CGRect.zero
+        let animationDuration = userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval ?? 0
+        let animationCurve = userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UIView.AnimationCurve ?? .linear
+        let keyboardEndFrame = userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect ?? CGRect.zero
         self.containerView.center = CGPoint(x: self.containerView.superview?.frame.size.width ?? 0 / 2, y: self.containerView.superview?.frame.size.height ?? 0 / 2)
         var frame = self.containerView.frame
         if up {
