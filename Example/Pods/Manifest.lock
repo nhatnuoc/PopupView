@@ -1,0 +1,16 @@
+PODS:
+  - SwiftPopupView (0.1.0)
+
+DEPENDENCIES:
+  - SwiftPopupView (from `../`)
+
+EXTERNAL SOURCES:
+  SwiftPopupView:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  SwiftPopupView: a34c03c879fec921df0a1fd83d687a845ffaf0e0
+
+PODFILE CHECKSUM: 7aba3b547843f1ec2ce6a42cbf7574de5362e0ad
+
+COCOAPODS: 1.15.2
