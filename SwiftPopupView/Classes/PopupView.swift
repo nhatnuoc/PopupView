@@ -102,6 +102,11 @@ public class PopupView: UIView {
         public static func center() -> Layout {
             return Layout(horizontal: .center, vertical: .center)
         }
+        
+        public init(horizontal: HorizontalLayout, vertical: VerticalLayout) {
+            self.horizontal = horizontal
+            self.vertical = vertical
+        }
     }
     
     var contentView: UIView!
