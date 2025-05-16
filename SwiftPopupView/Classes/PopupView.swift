@@ -117,10 +117,10 @@ public class PopupView: UIView {
     var shouldDismissOnBackgroundTouch: Bool = true
     var shouldDismissOnContentTouch: Bool = false
     var shouldHandleKeyboard: Bool = false
-    var willFinishShowingHandler: (() -> Void)?
-    var didFinishShowingHandler: (() -> Void)?
-    var willStartDismissingHandler: (() -> Void)?
-    var didFinishDismissingCompletion: (() -> Void)?
+    public var willFinishShowingHandler: (() -> Void)?
+    public var didFinishShowingHandler: (() -> Void)?
+    public var willStartDismissingHandler: (() -> Void)?
+    public var didFinishDismissingCompletion: (() -> Void)?
     private(set) var backgroundView: UIView
     private(set) var containerView: UIView
     private(set) var isBeingShown: Bool = false
